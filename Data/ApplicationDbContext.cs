@@ -10,5 +10,23 @@ namespace MovieCatalog.Data
         {
 
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=MovieCatalogDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
+            base.OnConfiguring(optionsBuilder);
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Catalog>()
+                .HasMany(c => c.Movies)
+                .WithMany(m => m.Catalogs);
+
+            base.OnModelCreating(modelBuilder);
+        }
+
+        public DbSet<Catalog> Catalogs { get; set; }
+        public DbSet<Movie> Movies { get; set; }
     }
 }
