@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MovieCatalog.Data;
+using MovieCatalog.Models;
 
 namespace MovieCatalog.Controllers
 {
@@ -45,9 +46,10 @@ namespace MovieCatalog.Controllers
         }
 
         // GET: Catalogs/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            ViewBag.Movies = await _context.Movies.ToListAsync();
+            return View(new CatalogCreateViewModel());
         }
 
         // POST: Catalogs/Create
@@ -55,15 +57,24 @@ namespace MovieCatalog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Description,Id")] Catalog catalog)
+        public async Task<IActionResult> Create(CatalogCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var catalog = new Catalog()
+                {
+                    Name = model.Name,
+                    Description = model.Description,
+                    Movies = model.MoviesIds
+                        .Select(id => _context.Movies.Find(id))
+                        .ToList()
+                };
+
                 _context.Add(catalog);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(catalog);
+            return View(model);
         }
 
         // GET: Catalogs/Edit/5

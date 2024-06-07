@@ -17,6 +17,6 @@ namespace MovieCatalog.Data
         [Required]
         public string Description { get; set; }
 
-        public ICollection<Catalog>? Catalogs { get; set; }
+        public virtual ICollection<Catalog>? Catalogs { get; set; }
     }
 }

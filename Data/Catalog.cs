@@ -5,6 +5,10 @@ namespace MovieCatalog.Data
 {
     public class Catalog : BaseEntity
     {
+        public Catalog()
+        {
+            Movies = new List<Movie>();
+        }
         [Required]
         [MinLength(2)]
         [MaxLength(64)]
@@ -15,6 +19,6 @@ namespace MovieCatalog.Data
         public string Description { get; set; }
 
         [JsonIgnore]
-        public ICollection<Movie>? Movies { get; set; }
+        public virtual ICollection<Movie>? Movies { get; set; }
     }
 }
